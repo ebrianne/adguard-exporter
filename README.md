@@ -262,7 +262,7 @@ After=syslog.target network-online.target
 Requires=AdGuardHome.Service
 
 [Service]
-ExecStart=/opt/adguard_exporter/adguard_exporter-linux-arm -adguard_protocol http -adguard_hostname <hostname> -adguard_username <username> -adguard_password <password> -adguard_port <port> -log_limit 5000
+ExecStart=/opt/adguard_exporter/adguard_exporter-linux-arm -adguard_protocol http -adguard_hostname <hostname> -adguard_username <username> -adguard_password <password> -log_limit 5000
 Restart=on-failure
 RestartSec=10s
 

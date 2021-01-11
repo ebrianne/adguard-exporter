@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"reflect"
 	"time"
 
@@ -22,7 +23,7 @@ type Config struct {
 	AdguardPort     string        `config:"adguard_port"`
 	ServerPort      string        `config:"server_port"`
 	Interval        time.Duration `config:"interval"`
-    LogLimit        string        `config:"log_limit"`
+	LogLimit        string        `config:"log_limit"`
 }
 
 func getDefaultConfig() *Config {
@@ -31,10 +32,10 @@ func getDefaultConfig() *Config {
 		AdguardHostname: "127.0.0.1",
 		AdguardUsername: "",
 		AdguardPassword: "",
-		AdguardPort:     "",
+		AdguardPort:     "80",
 		ServerPort:      "9617",
 		Interval:        10 * time.Second,
-    LogLimit:        "1000",
+		LogLimit:        "1000",
 	}
 }
 
@@ -50,7 +51,20 @@ func Load() *Config {
 	cfg := getDefaultConfig()
 	err := loader.Load(context.Background(), cfg)
 	if err != nil {
-		panic(err)
+		log.Printf("Could not load the configuration...")
+		os.Exit(1)
+	}
+
+	//Set the adguard port based on the input configuration
+	if cfg.AdguardPort == "" {
+		if cfg.AdguardProtocol == "http" {
+			cfg.AdguardPort = "80"
+		} else if cfg.AdguardProtocol == "https" {
+			cfg.AdguardPort = "443"
+		} else {
+			log.Printf("protocol %s is invalid. Must be http or https.", cfg.AdguardProtocol)
+			os.Exit(1)
+		}
 	}
 
 	cfg.show()

@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -37,23 +36,12 @@ type Client struct {
 
 // NewClient method initializes a new AdGuard  client.
 func NewClient(protocol, hostname, username, password, adport string, interval time.Duration, logLimit string) *Client {
-	if protocol != "http" && protocol != "https" {
-		log.Printf("protocol %s is invalid. Must be http or https.", protocol)
-		os.Exit(1)
+	
+	temp, err := strconv.Atoi(adport)
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	if adport == "" {
-		port = 80
-		if protocol == "https" {
-			port = 443
-		}
-	} else {
-		temp, err := strconv.Atoi(adport)
-		if err != nil {
-			log.Fatal(err)
-		}
-		port = uint16(temp)
-	}
+	port = uint16(temp)
 
 	return &Client{
 		protocol: protocol,
