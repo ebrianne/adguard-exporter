@@ -36,15 +36,19 @@ type Client struct {
 }
 
 // NewClient method initializes a new AdGuard  client.
-func NewClient(protocol, hostname string, username, password string, interval time.Duration, logLimit string) *Client {
+func NewClient(protocol, hostname, username, password, adport string, interval time.Duration, logLimit string) *Client {
 	if protocol != "http" && protocol != "https" {
 		log.Printf("protocol %s is invalid. Must be http or https.", protocol)
 		os.Exit(1)
 	}
 
-	port = 80
-	if protocol == "https" {
-		port = 443
+	if httpport == "" {
+		port = 80
+		if protocol == "https" {
+			port = 443
+		}
+	} else {
+		port = uint16(adport)
 	}
 
 	return &Client{
@@ -194,7 +198,7 @@ func (c *Client) MakeRequest(url string) []byte {
 		log.Fatal("An error has occurred when creating HTTP statistics request", err)
 	}
 
-	req.Host = "adguard.home-lab.io"
+	req.Host = c.hostname
 	req.Header.Add("User-Agent", "Mozilla/5.0")
 
 	if c.isUsingPassword() {
