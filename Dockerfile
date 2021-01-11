@@ -1,13 +1,13 @@
-FROM --platform=$BUILDPLATFORM golang:1.15-alpine3.12 AS build
+FROM golang:1.15-alpine3.12 as build
 ARG TARGETOS
 ARG TARGETARCH
 
 WORKDIR /tmp/adguard_exporter
 
-RUN apk --no-cache add git alpine-sdk upx
+RUN echo "${TARGETOS}-${TARGETARCH}" && apk --no-cache add git alpine-sdk upx
 COPY . .
 RUN GO111MODULE=on go mod vendor
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags '-s -w' -o adguard_exporter ./
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags '-s -w' -o adguard_exporter ./
 RUN upx -f --brute adguard_exporter
 
 FROM scratch

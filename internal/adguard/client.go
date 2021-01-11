@@ -42,13 +42,17 @@ func NewClient(protocol, hostname, username, password, adport string, interval t
 		os.Exit(1)
 	}
 
-	if httpport == "" {
+	if adport == "" {
 		port = 80
 		if protocol == "https" {
 			port = 443
 		}
 	} else {
-		port = uint16(adport)
+		temp, err := strconv.Atoi(adport)
+		if err != nil {
+			log.Fatal(err)
+		}
+		port = uint16(temp)
 	}
 
 	return &Client{
