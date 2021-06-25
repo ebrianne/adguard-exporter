@@ -124,6 +124,7 @@ services:
       - adguard_username=admin
       - adguard_password=/run/secrets/my-adguard-pass
       - adguard_port= #optional
+      - server_port=9617
       - interval=10s
       - log_limit=10000
 ```
@@ -155,6 +156,7 @@ services:
       - adguard_username=admin
       - adguard_password=/run/secrets/my-adguard-pass
       - adguard_port= #optional
+      - server_port=9617
       - interval=10s
       - log_limit=10000
 ```
